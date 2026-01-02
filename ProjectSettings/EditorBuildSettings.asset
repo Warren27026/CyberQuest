@@ -5,7 +5,20 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  m_configObjects: {}
+  - enabled: 1
+    path: Assets/Scenes/SC_MainVille.unity
+    guid: 5ab8c4fd2bfa10f44a3e8686c6efc1ba
+  - enabled: 1
+    path: Assets/Scenes/SC_Composants.unity
+    guid: 670536e7b05e95a448f19c068a27fa06
+  - enabled: 1
+    path: Assets/Scenes/SC_RoutesTerrain.unity
+    guid: c77bb1e3fe18ab04d9603c3ffc96bcc7
+  m_configObjects:
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 9102fb09a4da23649b69f904825bcda5,
+      type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 91920e569d2da504a8f5967001a74a65,
+      type: 2}
