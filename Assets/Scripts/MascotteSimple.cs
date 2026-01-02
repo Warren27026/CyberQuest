@@ -61,5 +61,11 @@ public class MascotteSimple : MonoBehaviour
 
         onShowYesButton?.Invoke();
     }
+
+    public void HideMascotte()
+    {
+       gameObject.SetActive(false);
+    }
+
 }
 
