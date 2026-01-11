@@ -18,7 +18,6 @@ public class MascotteSimple : MonoBehaviour
 
     void Start()
     {
-        // On cache au démarrage pour être sûr
         gameObject.SetActive(false);
     }
 
@@ -29,6 +28,15 @@ public class MascotteSimple : MonoBehaviour
             transform.position = storyPoint.position;
             transform.rotation = storyPoint.rotation;
         }
+        gameObject.SetActive(true);
+    }
+
+    public void ShowAt(Transform point)
+    {
+        if (point == null) return;
+
+        transform.position = point.position;
+        transform.rotation = point.rotation;
         gameObject.SetActive(true);
     }
 
@@ -45,18 +53,15 @@ public class MascotteSimple : MonoBehaviour
 
     public IEnumerator StorySequence(System.Action onShowYesButton)
     {
-        // Phrase 1 (Happy 4s)
         SetMood(MascotteMood.Happy);
         Say("Notre ville était merveilleuse...");
         yield return new WaitForSeconds(4f);
 
-        // Phrase 2 (switch Inter au moment du texte)
         SetMood(MascotteMood.Inter);
         Say("Mais un virus est arrivé et a attaqué ma chère mémoire");
         yield return new WaitForSeconds(4f);
 
-        // Phrase 3 (Inter)
-        Say("Ta tâche sera simple mais nous fera grand plaisir.\n T’es prêt ?");
+        Say("Ta tâche sera simple mais nous fera grand plaisir.\nT’es prêt ?");
         yield return new WaitForSeconds(3f);
 
         onShowYesButton?.Invoke();
@@ -64,8 +69,10 @@ public class MascotteSimple : MonoBehaviour
 
     public void HideMascotte()
     {
-       gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
-
 }
+
+
+
 
