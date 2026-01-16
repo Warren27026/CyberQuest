@@ -21,17 +21,10 @@ public class RamGameManager : MonoBehaviour
     void Start()
     {
         timer = timeLimit;
+        gameRunning = true;   // 🔥 Démarrage automatique
 
-        // Sécurité : cacher les panels au démarrage
         if (winPanel) winPanel.SetActive(false);
         if (losePanel) losePanel.SetActive(false);
-    }
-
-    // Appelé quand le joueur clique "Je commence le patch"
-    public void StartGame()
-    {
-        gameRunning = true;
-        timer = timeLimit;
     }
 
     void Update()
@@ -88,5 +81,4 @@ public class RamGameManager : MonoBehaviour
         }
     }
 }
-
 

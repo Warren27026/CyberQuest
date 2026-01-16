@@ -1,20 +1,43 @@
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class CubeSnap : MonoBehaviour
 {
-    public string cubeID;        // ex: "100"
-    public float snapDistance = 0.25f;
+    public string cubeID;              // ex: "14"
+    public float snapDistance = 0.3f;
+    public float snapSpeed = 8f;
 
     private Slot currentSlot;
+    private Rigidbody rb;
+    private XRGrabInteractable grab;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        grab = GetComponent<XRGrabInteractable>();
+
+        // Quand on reprend le cube → on libère le slot
+        grab.selectEntered.AddListener(OnGrab);
+    }
 
     void Update()
     {
         if (currentSlot == null) return;
 
         float d = Vector3.Distance(transform.position, currentSlot.transform.position);
+
         if (d < snapDistance)
         {
             SnapIntoSlot();
+        }
+        else
+        {
+            // Effet aimant (approche progressive)
+            transform.position = Vector3.Lerp(
+                transform.position,
+                currentSlot.transform.position,
+                Time.deltaTime * snapSpeed
+            );
         }
     }
 
@@ -22,7 +45,9 @@ public class CubeSnap : MonoBehaviour
     {
         Slot slot = other.GetComponent<Slot>();
 
-        if (slot != null && slot.slotID == cubeID && !slot.isOccupied)
+        if (slot != null && 
+            slot.slotID == cubeID && 
+            !slot.isOccupied)
         {
             currentSlot = slot;
         }
@@ -42,14 +67,22 @@ public class CubeSnap : MonoBehaviour
         transform.position = currentSlot.transform.position;
         transform.rotation = currentSlot.transform.rotation;
 
-        Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb != null)
-        {
-            rb.velocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
 
+        rb.isKinematic = true;   // Le bloque physiquement dans la case
         currentSlot.isOccupied = true;
     }
-}
 
+    void OnGrab(SelectEnterEventArgs args)
+    {
+        // Quand on reprend le cube → on libère la case
+        if (currentSlot != null)
+        {
+            currentSlot.isOccupied = false;
+            currentSlot = null;
+        }
+
+        rb.isKinematic = false;
+    }
+}

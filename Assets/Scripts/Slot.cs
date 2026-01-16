@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class Slot : MonoBehaviour
 {
-    public string slotID;   // ex: "100"
+    [Header("Slot Identity")]
+    public string slotID;     // ex: "14"
+
+    [HideInInspector]
     public bool isOccupied = false;
 }
-
-
