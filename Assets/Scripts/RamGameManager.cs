@@ -4,12 +4,13 @@ using System.Collections.Generic;
 public class RamGameManager : MonoBehaviour
 {
     [Header("Timer")]
-    public float timeLimit = 300f;   // 5 minutes
+    public float timeLimit = 500f;   
     private float timer;
     private bool gameRunning = false;
 
     [Header("Gameplay")]
-    public List<Slot> slots = new List<Slot>();
+    public List<SlotSocket> slots;
+
 
     [Header("Mascotte")]
     public MascotteSimple mascotte;
@@ -21,7 +22,7 @@ public class RamGameManager : MonoBehaviour
     void Start()
     {
         timer = timeLimit;
-        gameRunning = true;   // 🔥 Démarrage automatique
+        gameRunning = true;   //Démarrage automatique
 
         if (winPanel) winPanel.SetActive(false);
         if (losePanel) losePanel.SetActive(false);
@@ -45,13 +46,15 @@ public class RamGameManager : MonoBehaviour
 
     bool CheckVictory()
     {
-        foreach (Slot s in slots)
+        foreach (SlotSocket s in slots)
         {
-            if (!s.isOccupied)
+            if (!s.isCorrect)
                 return false;
         }
         return true;
     }
+
+
 
     void EndGame(bool success)
     {
@@ -61,23 +64,12 @@ public class RamGameManager : MonoBehaviour
         {
             if (winPanel) winPanel.SetActive(true);
 
-            if (mascotte)
-            {
-                mascotte.ShowAtStoryPoint();
-                mascotte.SetMood(MascotteMood.Happy);
-                mascotte.Say("Bravo ! Tu as réparé la mémoire !");
-            }
         }
         else
         {
             if (losePanel) losePanel.SetActive(true);
 
-            if (mascotte)
-            {
-                mascotte.ShowAtStoryPoint();
-                mascotte.SetMood(MascotteMood.Anx);
-                mascotte.Say("Oh non... Le temps est écoulé...");
-            }
+
         }
     }
 }

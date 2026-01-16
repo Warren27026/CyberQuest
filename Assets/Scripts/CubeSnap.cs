@@ -3,9 +3,9 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class CubeSnap : MonoBehaviour
 {
-    public string cubeID;              // ex: "14"
-    public float snapDistance = 0.3f;
-    public float snapSpeed = 8f;
+    public string cubeID;
+    public float snapDistance = 0.5f;
+    public float snapSpeed = 0f;
 
     private Slot currentSlot;
     private Rigidbody rb;
@@ -16,8 +16,8 @@ public class CubeSnap : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         grab = GetComponent<XRGrabInteractable>();
 
-        // Quand on reprend le cube → on libère le slot
-        grab.selectEntered.AddListener(OnGrab);
+        if (grab != null)
+            grab.selectEntered.AddListener(OnGrab);
     }
 
     void Update()
@@ -32,7 +32,6 @@ public class CubeSnap : MonoBehaviour
         }
         else
         {
-            // Effet aimant (approche progressive)
             transform.position = Vector3.Lerp(
                 transform.position,
                 currentSlot.transform.position,
@@ -43,11 +42,9 @@ public class CubeSnap : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Slot slot = other.GetComponent<Slot>();
+        Slot slot = other.GetComponentInParent<Slot>();
 
-        if (slot != null && 
-            slot.slotID == cubeID && 
-            !slot.isOccupied)
+        if (slot != null && !slot.isOccupied)
         {
             currentSlot = slot;
         }
@@ -55,7 +52,7 @@ public class CubeSnap : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        Slot slot = other.GetComponent<Slot>();
+        Slot slot = other.GetComponentInParent<Slot>();
         if (slot == currentSlot)
         {
             currentSlot = null;
@@ -69,20 +66,22 @@ public class CubeSnap : MonoBehaviour
 
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
+        rb.isKinematic = true;
 
-        rb.isKinematic = true;   // Le bloque physiquement dans la case
         currentSlot.isOccupied = true;
+        currentSlot.isCorrect = (currentSlot.slotID == cubeID);
     }
 
     void OnGrab(SelectEnterEventArgs args)
     {
-        // Quand on reprend le cube → on libère la case
         if (currentSlot != null)
         {
             currentSlot.isOccupied = false;
+            currentSlot.isCorrect = false;
             currentSlot = null;
         }
 
         rb.isKinematic = false;
     }
 }
+
