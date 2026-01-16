@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class RamGameManager : MonoBehaviour
 {
     [Header("Timer")]
-    public float timeLimit = 500f;   
+    public float timeLimit = 350f;   
     private float timer;
     private bool gameRunning = false;
 
