@@ -18,6 +18,10 @@ EditorBuildSettings:
     path: Assets/Scenes/SC_RoutesTerrain.unity
     guid: c77bb1e3fe18ab04d9603c3ffc96bcc7
   m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 116e0c7c2fd5e68499f32a62834216cd,
+      type: 2}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 37d2eee4f2e3dbf4a8a9d568c76f34aa,
+      type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 9102fb09a4da23649b69f904825bcda5,
       type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 91920e569d2da504a8f5967001a74a65,
