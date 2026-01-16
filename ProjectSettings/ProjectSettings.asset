@@ -12,7 +12,7 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: DefaultCompany
+  companyName: CyberQuest
   productName: CyberQuest
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
@@ -142,6 +142,7 @@ PlayerSettings:
   bundleVersion: 0.1.0
   preloadedAssets:
   - {fileID: 79295030409600994, guid: 9102fb09a4da23649b69f904825bcda5, type: 2}
+  - {fileID: 11400000, guid: 37d2eee4f2e3dbf4a8a9d568c76f34aa, type: 2}
   - {fileID: -4783890127251345104, guid: 91920e569d2da504a8f5967001a74a65, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
@@ -163,7 +164,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.salma.questtest
+    Android: com.cyberquest.vr
     Standalone: com.Unity-Technologies.com.unity.template.urp-blank
     iPhone: com.Unity-Technologies.com.unity.template.urp-blank
   buildNumber:
@@ -173,7 +174,7 @@ PlayerSettings:
     tvOS: 0
   overrideDefaultApplicationIdentifier: 1
   AndroidBundleVersionCode: 1
-  AndroidMinSdkVersion: 36
+  AndroidMinSdkVersion: 29
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
   aotOptions: 
@@ -857,7 +858,7 @@ PlayerSettings:
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
   metroPackageName: CyberQuest
-  metroPackageVersion: 
+  metroPackageVersion: 1.0.0.0
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
@@ -865,7 +866,7 @@ PlayerSettings:
   metroCertificateNotAfter: 0000000000000000
   metroApplicationDescription: CyberQuest
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: CyberQuest
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
