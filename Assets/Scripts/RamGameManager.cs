@@ -1,3 +1,4 @@
+//script de gestion du jeu RAM
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -7,6 +8,9 @@ public class RamGameManager : MonoBehaviour
     public float timeLimit = 90f;   
     private float timer;
     private bool gameRunning = false;
+    public bool IsGameRunning => gameRunning;
+
+    
 
     [Header("Gameplay")]
     public List<SlotSocket> slots;
@@ -20,7 +24,7 @@ public class RamGameManager : MonoBehaviour
     public AudioClip failClip;
 
     [Header("Final Mascotte")]
-    public GameObject finalMascotte;   // le GameObject "mascotte"
+    public GameObject finalMascotte;
     public GameObject finalFaceHappy;
     public GameObject finalFaceSad;
 
@@ -32,19 +36,26 @@ public class RamGameManager : MonoBehaviour
     public GameObject winPanel;
     public GameObject losePanel;
 
+    
+
+
     void Start()
     {
+        //le jeu ne demarre pas automatiquement (on attend la fin de l'exploration libre)
+        gameRunning = false;
         timer = timeLimit;
-        gameRunning = true;
 
         if (winPanel) winPanel.SetActive(false);
         if (losePanel) losePanel.SetActive(false);
 
-        // Mascotte finale cachée au départ
+        //mascotte cachee au depart
         if (finalMascotte)
             finalMascotte.SetActive(false);
+
+        
     }
 
+    //mise a jour du timer chaque frame pour voir si on arrete le jeu en cas de victoire ou defaite 
     void Update()
     {
         if (!gameRunning) return;
@@ -61,6 +72,18 @@ public class RamGameManager : MonoBehaviour
         }
     }
 
+    //demarrer le jeu RAM
+    public void StartGame()
+    {
+        //initialiser le timer
+        timer = timeLimit;
+        gameRunning = true;
+
+        if (ramTimer != null)
+            ramTimer.StartTimer();
+    }
+
+    //verifier si toutes les cases sont correctes:
     bool CheckVictory()
     {
         foreach (SlotSocket s in slots)
@@ -70,7 +93,8 @@ public class RamGameManager : MonoBehaviour
         }
         return true;
     }
-
+    
+    //terminer le jeu RAM
     void EndGame(bool success)
     {
         gameRunning = false;
@@ -95,8 +119,7 @@ public class RamGameManager : MonoBehaviour
         }
     }
 
-    // Mascotte finale
-
+    //afficher la mascotte finale avec l'expression appropriee
     void ShowFinalMascotte(bool happy)
     {
         if (!finalMascotte) return;
@@ -110,8 +133,8 @@ public class RamGameManager : MonoBehaviour
             finalFaceSad.SetActive(!happy);
     }
 
-    // Sons finaux
-
+    
+    //sons du feedback
     public void PlayFinalWin()
     {
         if (audioSource && finalWinClip)
@@ -123,8 +146,6 @@ public class RamGameManager : MonoBehaviour
         if (audioSource && finalLoseClip)
             audioSource.PlayOneShot(finalLoseClip);
     }
-
-    // Sons intermédiaires (si tu les utilises ailleurs)
 
     public void PlaySuccess()
     {

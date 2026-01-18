@@ -1,143 +1,135 @@
 using UnityEngine;
 using TMPro;
 using System.Collections;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class IntroFlow : MonoBehaviour
 {
-    [Header("Intro UI")]
-    public GameObject introPanel;
+    [Header("UI")]
+    public GameObject introCanvas;
     public TextMeshProUGUI introText;
-    public GameObject btnNext;
-    public GameObject btnCompris;
-    public GameObject btnOk;
-    public GameObject btnComprisCPU;
-    public GameObject btnComprisDriver;
-    public GameObject btnCommencerPatch;
 
-    [Header("Mascotte Points")]
-    public Transform cpuMascottePoint;
-    public Transform driverMascottePoint;
-    public Transform ramMascottePoint;
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip beepClip;
 
-    [Header("Story Decision UI")]
-    public GameObject storyDecisionCanvas;
+    [Header("Game")]
+    public RamGameManager gameManager;
 
-    [Header("Refs")]
-    public MascotteSimple mascotte;
-    public TeleportSimple teleport;
+    [Header("XR Controls")]
+    public XRRayInteractor leftRay;
+    public XRRayInteractor rightRay;
+    public XRDirectInteractor leftGrab;
+    public XRDirectInteractor rightGrab;
 
-    private int step = 0;
+    [Header("Timing")]
+    public float explorationTime = 40f;
+
+    private bool introFinished = false;
+
+    [Header("RAM Cubes")]
+    public XRGrabInteractable[] ramCubes;
+
 
     void Start()
     {
-        if (storyDecisionCanvas) storyDecisionCanvas.SetActive(false);
-        if (btnCommencerPatch) btnCommencerPatch.SetActive(false);
+        // Phase 0 — Bloquer totalement le joueur
+        DisableXR();
 
-        if (teleport != null) teleport.TeleportToEntry();
-        ShowStep(0);
+        // Sécurité UI
+        if (introCanvas) introCanvas.SetActive(true);
+
+        // Lancement automatique de la séquence
+        StartCoroutine(IntroSequence());
+        DisableXR();
+        DisableCubes();
+
     }
 
-    void ShowStep(int s)
+    IEnumerator IntroSequence()
     {
-        step = s;
+        //PHASE 1 — INTRO UI
+        SetText("Bienvenue dans CyberQuest");
+        yield return new WaitForSeconds(2f);
 
-        if (btnNext) btnNext.SetActive(step == 0);
-        if (btnCompris) btnCompris.SetActive(step == 1);
-        if (btnOk) btnOk.SetActive(step == 2);
+        SetText("La ville qui simule les composants internes de l’ordinateur sous forme de ville");
+        yield return new WaitForSeconds(3f);
 
-        if (introText == null) return;
+        SetText("Notre RAM a été attaquée par un virus qui a causé une fuite mémoire");
+        yield return new WaitForSeconds(5f);
 
-        if (step == 0)
-            introText.text = "Bienvenue à CyberQuest!\nLe jeu qui te met au sein d'une ville simulant les composants d'ordinateurs.";
-        else if (step == 1)
-            introText.text = "Pour montrer l’interface de jeu :\nfais un geste abracadabra et laisse le bouton maintenu.";
-        else if (step == 2)
-            introText.text = "La mascotte du jeu va s'afficher pour t'accompagner.";
+        SetText("Veuillez remettre les instructions à leurs places, utilise le trigger pour te teleporter et attraper l'instruction, et le joystick pour le déplacer");
+        yield return new WaitForSeconds(4f);
+
+        SetText("Mais d'abord, vous avez 40 secondes pour découvrir les composants avant de commencer");
+        yield return new WaitForSeconds(4f);
+
+        // Masquer l’UI
+        if (introCanvas) introCanvas.SetActive(false);
+
+        //PHASE 2 — EXPLORATION LIBRE
+        EnableXR();   // Le joueur peut regarder / se déplacer
+
+        yield return new WaitForSeconds(explorationTime);
+
+        // Bip
+        if (audioSource && beepClip)
+            audioSource.PlayOneShot(beepClip);
+            EnableCubes();
+
+
+        //PHASE 3 — JEU ACTIF 
+        if (gameManager)
+            gameManager.StartGame();
+
+        introFinished = true;
     }
 
-    public void BtnNext() => ShowStep(1);
-    public void BtnCompris() => ShowStep(2);
-
-    public void BtnOk()
+    void SetText(string message)
     {
-        if (introPanel) introPanel.SetActive(false);
-        StartCoroutine(StartMascotteStory());
+        if (introText)
+            introText.text = message;
     }
 
-    IEnumerator StartMascotteStory()
+    //XR CONTROL
+
+    void DisableXR()
     {
-        if (mascotte != null)
+        if (leftRay) leftRay.enabled = false;
+        if (rightRay) rightRay.enabled = false;
+
+        if (leftGrab) leftGrab.enabled = false;
+        if (rightGrab) rightGrab.enabled = false;
+    }
+
+    void EnableXR()
+    {
+        if (leftRay) leftRay.enabled = true;
+        if (rightRay) rightRay.enabled = true;
+
+        if (leftGrab) leftGrab.enabled = true;
+        if (rightGrab) rightGrab.enabled = true;
+    }
+
+    void DisableCubes()
+    {
+        foreach (var cube in ramCubes)
         {
-            mascotte.ShowAtStoryPoint();
-            yield return StartCoroutine(
-                mascotte.StorySequence(() =>
-                {
-                    if (storyDecisionCanvas)
-                        storyDecisionCanvas.SetActive(true);
-                })
-            );
+           if (cube)
+                cube.enabled = false;
         }
     }
 
-    public void BtnYesStart()
+    void EnableCubes()
     {
-        if (storyDecisionCanvas) storyDecisionCanvas.SetActive(false);
-        StartCPUStory();
+        foreach (var cube in ramCubes)
+        {
+            if (cube)
+                cube.enabled = true;
+        }
     }
 
-    public void StartCPUStory()
-    {
-        if (teleport != null) teleport.TeleportToCPU();
-        if (btnComprisCPU) btnComprisCPU.SetActive(true);
 
-        mascotte.ShowAt(cpuMascottePoint);
-        mascotte.SetMood(MascotteMood.Happy);
-        mascotte.Say("Voici le CPU\nIl est le cerveau de l’ordinateur.");
-    }
-
-    public void BtnComprisCPU()
-    {
-        StartDriverStory();
-    }
-
-    public void StartDriverStory()
-    {
-        if (btnComprisCPU) btnComprisCPU.SetActive(false);
-        if (btnComprisDriver) btnComprisDriver.SetActive(true);
-
-        if (teleport != null) teleport.TeleportToDriver();
-
-        mascotte.ShowAt(driverMascottePoint);
-        mascotte.SetMood(MascotteMood.Happy);
-        mascotte.Say("Le disque dur est le lieu de \nstockage permanent des données.");
-    }
-
-    public void BtnComprisDriver()
-    {
-        if (teleport != null) teleport.TeleportToRAM();
-        StartRamIntro();
-    }
-
-    public void StartRamIntro()
-    {
-        if (btnComprisDriver) btnComprisDriver.SetActive(false);
-        StartCoroutine(RamSequence());
-    }
-
-    IEnumerator RamSequence()
-    {
-        mascotte.ShowAt(ramMascottePoint);
-        mascotte.SetMood(MascotteMood.Happy);
-        mascotte.Say("Voici la mémoire RAM\nElle stocke les données temporaires");
-        yield return new WaitForSeconds(3f);
-
-        mascotte.Say("Chaque donnée est stockée dans une cellule \n mémoire identifiée par une adresse.");
-        yield return new WaitForSeconds(4f);
-
-        mascotte.SetMood(MascotteMood.Inter);
-        mascotte.Say("Un virus a causé une fuite mémoire.\nÀ toi de la réparer.");
-
-        if (btnCommencerPatch) btnCommencerPatch.SetActive(true);
-    }
 }
+
 

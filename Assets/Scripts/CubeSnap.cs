@@ -1,3 +1,4 @@
+//script pour gerer le snap/"l'aimentation" des cubes dans les cases correspondantes
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
